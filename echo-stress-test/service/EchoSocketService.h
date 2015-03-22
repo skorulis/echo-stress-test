@@ -5,4 +5,7 @@
 
 @interface EchoSocketService : NSObject
 
+@property (nonatomic, readonly) NSInteger openSockets;
+@property (nonatomic, readonly) NSTimeInterval avgPingTime;
+
 @end
