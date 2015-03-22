@@ -3,4 +3,4 @@ platform :ios, '7.0'
 
 pod 'Masonry'
 pod 'FontAwesomeKit'
-pod 'SocketRocket'
+pod 'SocketRocket',:inhibit_warnings => true
