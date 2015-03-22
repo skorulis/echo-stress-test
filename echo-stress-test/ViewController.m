@@ -14,6 +14,7 @@
     EchoSocketService* _echoService;
     UILabel* _socketCount;
     UILabel* _pingLabel;
+    UILabel* _openingLabel;
     CADisplayLink* _displayLink;
 }
 
@@ -24,6 +25,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     _echoService = [[EchoSocketService alloc] init];
+    
+    _openingLabel = [[UILabel alloc] init];
+    [self.view addSubview:_openingLabel];
     
     _socketCount = [[UILabel alloc] init];
     [self.view addSubview:_socketCount];
@@ -36,6 +40,11 @@
 }
 
 - (void) buildLayout {
+    [_openingLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(_socketCount.mas_top).with.offset(-20);
+        make.centerX.equalTo(_socketCount);
+    }];
+    
     [_socketCount mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self.view);
     }];
@@ -53,6 +62,7 @@
 }
 
 - (void) updateText:(CADisplayLink*)sender {
+    _openingLabel.text = [NSString stringWithFormat:@"opening: %ld",(long)_echoService.openingSockets];
     _socketCount.text = [NSString stringWithFormat:@"sockets: %ld",(long)_echoService.openSockets];
     _pingLabel.text = [NSString stringWithFormat:@"avg ping: %.2f",_echoService.avgPingTime];
 }

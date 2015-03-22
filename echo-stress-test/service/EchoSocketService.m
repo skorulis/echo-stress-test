@@ -4,9 +4,11 @@
 #import "EchoSocketService.h"
 #import "EchoSocket.h"
 
+static NSInteger const kConcurrentOpens = 30;
+static NSInteger const kMaxSockets = 1000;
+
 @interface EchoSocketService () <EchoSocketDelegate> {
     NSMutableArray* _echoSockets;
-    
 }
 
 @end
@@ -14,6 +16,7 @@
 @implementation EchoSocketService
 
 @dynamic avgPingTime;
+@dynamic openingSockets;
 
 - (instancetype) init {
     self = [super init];
@@ -25,6 +28,18 @@
 - (void) addSocket {
     EchoSocket* socket = [[EchoSocket alloc] initWithDelegate:self];
     [_echoSockets addObject:socket];
+}
+
+- (void) addSocketsUpToMax {
+    NSInteger required = kConcurrentOpens - self.openingSockets;
+    required = MIN(required, kMaxSockets - _echoSockets.count);
+    for(int i = 0; i < required; ++i) {
+        [self addSocket];
+    }
+}
+
+- (NSInteger) openingSockets {
+    return _echoSockets.count - _openSockets;
 }
 
 - (NSTimeInterval) avgPingTime {
@@ -46,11 +61,12 @@
 
 - (void) echoSocketDidOpen:(EchoSocket*)socket {
     _openSockets++;
-    [self addSocket];
+    [self addSocketsUpToMax];
 }
 
 - (void) echoSocketDidClose:(EchoSocket*)socket {
     _openSockets--;
+    [_echoSockets removeObject:socket];
 }
 
 

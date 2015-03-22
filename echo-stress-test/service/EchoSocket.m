@@ -63,7 +63,6 @@ static NSString* const kServerAddress = @"ws://peaceful-hollows-7806.herokuapp.c
 }
 
 - (void)webSocketDidOpen:(SRWebSocket *)webSocket {
-    NSLog(@"Web socket opened");
     [self sendPing];
     [self startTimer];
     [_delegate echoSocketDidOpen:self];
